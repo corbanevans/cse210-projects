@@ -5,7 +5,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.Write("Enter a list of numbers, type 0 when finished.");
+        Console.Write("Enter a list of numbers, type 0 when finished.\n");
         List<int> numbers = new List<int>();
         
         int userNumber = -1;
