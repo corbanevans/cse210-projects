@@ -15,11 +15,34 @@ class BreathingActivity : MindfulnessActivity
         int elapsed = 0;
         while (elapsed < _duration)
         {
+            Console.Clear();
             Console.WriteLine("Breathe in...");
-            ShowCountdown(4);
+            for (int i = 1; i <= 5; i++)
+            {
+                Console.Clear();
+                Console.WriteLine("Breathe in...");
+                PrintCircle(i);
+                Thread.Sleep(1000);
+            }
+            
+            Console.Clear();
             Console.WriteLine("Breathe out...");
-            ShowCountdown(4);
-            elapsed += 8;
+            for (int i = 5; i >= 1; i--)
+            {
+                Console.Clear();
+                Console.WriteLine("Breathe out...");
+                PrintCircle(i);
+                Thread.Sleep(1000);
+            }
+            elapsed += 10;
+        }
+    }
+
+    private void PrintCircle(int size)
+    {
+        for (int i = 0; i < size; i++)
+        {
+            Console.WriteLine(new string('*', size * 2));
         }
     }
 }

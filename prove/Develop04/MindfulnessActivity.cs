@@ -24,10 +24,11 @@ abstract class MindfulnessActivity
 
     protected void ShowSpinner(int seconds)
     {
-        for (int i = 0; i < seconds; i++)
+        string[] spinner = { "|", "/", "-", "\\" };
+        for (int i = 0; i < seconds * 4; i++)
         {
-            Console.Write(".");
-            Thread.Sleep(1000);
+            Console.Write($"\r{spinner[i % 4]} ");
+            Thread.Sleep(250);
         }
         Console.WriteLine();
     }
@@ -44,7 +45,9 @@ abstract class MindfulnessActivity
 
     private void EndActivity()
     {
+        Console.Clear();
         Console.WriteLine($"Well done! You completed the {_name} for {_duration} seconds.");
         ShowSpinner(3);
+        Console.Clear();
     }
 }

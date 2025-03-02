@@ -21,6 +21,7 @@ class ListingActivity : MindfulnessActivity
     protected override void RunActivity()
     {
         Random rand = new Random();
+        Console.Clear();
         Console.WriteLine(_prompts[rand.Next(_prompts.Count)]);
         ShowCountdown(3);
         List<string> responses = new List<string>();
@@ -31,6 +32,8 @@ class ListingActivity : MindfulnessActivity
             responses.Add(Console.ReadLine());
             elapsed += 5;
         }
+        Console.Clear();
         Console.WriteLine($"You listed {responses.Count} items.");
+        ShowSpinner(3);
     }
 }

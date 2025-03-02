@@ -30,11 +30,13 @@ class ReflectionActivity : MindfulnessActivity
     protected override void RunActivity()
     {
         Random rand = new Random();
+        Console.Clear();
         Console.WriteLine(_prompts[rand.Next(_prompts.Count)]);
         ShowSpinner(3);
         int elapsed = 0;
         while (elapsed < _duration)
         {
+            Console.Clear();
             Console.WriteLine(_questions[rand.Next(_questions.Count)]);
             ShowSpinner(5);
             elapsed += 5;
