@@ -4,23 +4,28 @@ namespace EternalQuestProgram
 {
     public class SimpleGoal : Goal
     {
-        public bool IsCompleted { get; private set; }
+        private bool _isCompleted;
 
         public SimpleGoal(string description, int points)
         {
-            Description = description;
-            Points = points;
-            IsCompleted = false;
+            _description = description;
+            _points = points;
+            _isCompleted = false;
         }
 
         public override void RecordEvent()
         {
-            IsCompleted = true;
+            _isCompleted = true;
         }
 
         public override string GetProgress()
         {
-            return IsCompleted ? "[X] Completed" : "[ ] Not Completed";
+            return _isCompleted ? "[X] Completed" : "[ ] Not Completed";
+        }
+
+        public bool GetCompletionStatus()
+        {
+            return _isCompleted;
         }
     }
 }

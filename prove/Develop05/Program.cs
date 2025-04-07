@@ -114,7 +114,7 @@ namespace EternalQuestProgram
             Console.WriteLine("\nSelect a goal to record progress:");
             for (int i = 0; i < goals.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {goals[i].Description}");
+                Console.WriteLine($"{i + 1}. {goals[i].GetDescription()}");
             }
 
             Console.Write("Enter the number of the goal: ");
@@ -123,7 +123,7 @@ namespace EternalQuestProgram
             if (goalIndex >= 0 && goalIndex < goals.Count)
             {
                 goals[goalIndex].RecordEvent();
-                levelSystem.AddPoints(goals[goalIndex].Points);
+                levelSystem.AddPoints(goals[goalIndex].GetPoints());
                 Console.WriteLine("Progress recorded successfully!");
             }
             else
@@ -137,7 +137,7 @@ namespace EternalQuestProgram
             Console.WriteLine("\nYour Goals:");
             foreach (var goal in goals)
             {
-                Console.WriteLine($"- {goal.Description}");
+                Console.WriteLine($"- {goal.GetDescription()}");
                 Console.WriteLine($"  Progress: {goal.GetProgress()}");
             }
         }
@@ -147,69 +147,68 @@ namespace EternalQuestProgram
             using (StreamWriter writer = new StreamWriter(SaveFilePath))
             {
                 // Save LevelSystem
-                writer.WriteLine($"{levelSystem.CurrentLevel},{levelSystem.TotalPoints},{levelSystem.PointsToNextLevel}");
+                writer.WriteLine($"{levelSystem.GetCurrentLevel},{levelSystem.GetTotalPoints},{levelSystem.GetPointsToNextLevel}");
 
                 // Save Goals
                 foreach (var goal in goals)
                 {
                     if (goal is SimpleGoal simpleGoal)
                     {
-                        writer.WriteLine($"SimpleGoal|{simpleGoal.Description}|{simpleGoal.Points}|{simpleGoal.IsCompleted}");
+                        writer.WriteLine($"SimpleGoal|{simpleGoal.GetDescription}|{simpleGoal.GetPoints}|{simpleGoal.GetCompletionStatus}");
                     }
                     else if (goal is EternalGoal eternalGoal)
                     {
-                        writer.WriteLine($"EternalGoal|{eternalGoal.Description}|{eternalGoal.PointsPerEvent}|{eternalGoal.ProgressCount}");
+                        writer.WriteLine($"EternalGoal|{eternalGoal.GetDescription}|{eternalGoal.GetPointsPerEvent}|{eternalGoal.GetProgressCount}");
                     }
                     else if (goal is ChecklistGoal checklistGoal)
                     {
-                        writer.WriteLine($"ChecklistGoal|{checklistGoal.Description}|{checklistGoal.PointsPerEvent}|{checklistGoal.CurrentCount}|{checklistGoal.RequiredCount}|{checklistGoal.BonusPoints}|{checklistGoal.IsCompleted}");
+                        writer.WriteLine($"ChecklistGoal|{checklistGoal.GetDescription}|{checklistGoal.GetPointsPerEvent}|{checklistGoal.GetCurrentCount}|{checklistGoal.GetRequiredCount}|{checklistGoal.GetBonusPoints}|{checklistGoal.GetCompletionStatus}");
                     }
                 }
             }
         }
 
         static void LoadData(List<Goal> goals, LevelSystem levelSystem)
+{
+    if (!File.Exists(SaveFilePath)) return;
+
+    using (StreamReader reader = new StreamReader(SaveFilePath))
+    {
+        // Load LevelSystem data
+        string levelData = reader.ReadLine();
+        var levelParts = levelData.Split(',');
+        levelSystem.Load(levelData); // Ensures proper handling in LevelSystem class
+
+        // Load Goals
+        string line;
+        while ((line = reader.ReadLine()) != null)
         {
-            if (!File.Exists(SaveFilePath)) return;
+            var parts = line.Split('|');
+            string goalType = parts[0];
 
-            using (StreamReader reader = new StreamReader(SaveFilePath))
+            switch (goalType)
             {
-                // Load LevelSystem
-                string levelData = reader.ReadLine();
-                var levelParts = levelData.Split(',');
-                levelSystem.CurrentLevel = int.Parse(levelParts[0]);
-                levelSystem.TotalPoints = int.Parse(levelParts[1]);
-                levelSystem.PointsToNextLevel = int.Parse(levelParts[2]);
-
-                // Load Goals
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    var parts = line.Split('|');
-                    string goalType = parts[0];
-
-                    switch (goalType)
+                case "SimpleGoal":
+                    var simpleGoal = new SimpleGoal(parts[1], int.Parse(parts[2]));
+                    if (bool.Parse(parts[3])) 
                     {
-                        case "SimpleGoal":
-                            var simpleGoal = new SimpleGoal(parts[1], int.Parse(parts[2]));
-                            if (bool.Parse(parts[3]))
-                            {
-                                simpleGoal.RecordEvent();
-                            }
-                            goals.Add(simpleGoal);
-                            break;
+                        simpleGoal.RecordEvent(); // Marks it completed if saved as completed
+                    }
+                    goals.Add(simpleGoal);
+                    break;
 
-                        case "EternalGoal":
-                            var eternalGoal = new EternalGoal(parts[1], int.Parse(parts[2]));
-                            eternalGoal.LoadProgress(int.Parse(parts[3]));
-                            goals.Add(eternalGoal);
-                            break;
+                case "EternalGoal":
+                    var eternalGoal = new EternalGoal(parts[1], int.Parse(parts[2]));
+                    eternalGoal.LoadProgress(int.Parse(parts[3]));
+                    goals.Add(eternalGoal);
+                    break;
 
-                        case "ChecklistGoal":
-                            var checklistGoal = new ChecklistGoal(parts[1], int.Parse(parts[2]), int.Parse(parts[4]), int.Parse(parts[5]));
-                            checklistGoal.LoadProgress(int.Parse(parts[3]), bool.Parse(parts[6]));
-                            goals.Add(checklistGoal);
-                            break;
+                case "ChecklistGoal":
+                    var checklistGoal = new ChecklistGoal(parts[1], int.Parse(parts[2]), int.Parse(parts[4]), int.Parse(parts[5]));
+                    checklistGoal.LoadProgress(int.Parse(parts[3]), bool.Parse(parts[6]));
+                    goals.Add(checklistGoal);
+                    break;
+
                     }
                 }
             }

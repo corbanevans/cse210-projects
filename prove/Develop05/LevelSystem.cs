@@ -4,22 +4,22 @@ namespace EternalQuestProgram
 {
     public class LevelSystem
     {
-        public int CurrentLevel { get; set; }
-        public int TotalPoints { get; set; }
-        public int PointsToNextLevel { get; set; }
+        private int _currentLevel;
+        private int _totalPoints;
+        private int _pointsToNextLevel;
 
         public LevelSystem()
         {
-            CurrentLevel = 1;
-            TotalPoints = 0;
-            PointsToNextLevel = CalculatePointsToNextLevel();
+            _currentLevel = 1;
+            _totalPoints = 0;
+            _pointsToNextLevel = CalculatePointsToNextLevel();
         }
 
         public void AddPoints(int points)
         {
-            TotalPoints += points;
+            _totalPoints += points;
 
-            while (TotalPoints >= PointsToNextLevel)
+            while (_totalPoints >= _pointsToNextLevel)
             {
                 LevelUp();
             }
@@ -27,34 +27,49 @@ namespace EternalQuestProgram
 
         private void LevelUp()
         {
-            CurrentLevel++;
-            Console.WriteLine($"Congratulations! You've leveled up to Level {CurrentLevel}!");
-            PointsToNextLevel = CalculatePointsToNextLevel();
+            _currentLevel++;
+            Console.WriteLine($"Congratulations! You've leveled up to Level {_currentLevel}!");
+            _pointsToNextLevel = CalculatePointsToNextLevel();
         }
 
         private int CalculatePointsToNextLevel()
         {
-            return CurrentLevel * 1000;
+            return _currentLevel * 1000;
         }
 
         public void DisplayLevelStatus()
         {
-            Console.WriteLine($"Current Level: {CurrentLevel}");
-            Console.WriteLine($"Total Points: {TotalPoints}");
-            Console.WriteLine($"Points to Next Level: {PointsToNextLevel - TotalPoints}");
+            Console.WriteLine($"Current Level: {_currentLevel}");
+            Console.WriteLine($"Total Points: {_totalPoints}");
+            Console.WriteLine($"Points to Next Level: {_pointsToNextLevel - _totalPoints}");
         }
 
         public string Save()
         {
-            return $"{CurrentLevel},{TotalPoints},{PointsToNextLevel}";
+            return $"{_currentLevel},{_totalPoints},{_pointsToNextLevel}";
         }
 
         public void Load(string data)
         {
             var parts = data.Split(',');
-            CurrentLevel = int.Parse(parts[0]);
-            TotalPoints = int.Parse(parts[1]);
-            PointsToNextLevel = int.Parse(parts[2]);
+            _currentLevel = int.Parse(parts[0]);
+            _totalPoints = int.Parse(parts[1]);
+            _pointsToNextLevel = int.Parse(parts[2]);
+        }
+
+        public int GetCurrentLevel()
+        {
+            return _currentLevel;
+        }
+
+        public int GetTotalPoints()
+        {
+            return _totalPoints;
+        }
+
+        public int GetPointsToNextLevel()
+        {
+            return _pointsToNextLevel;
         }
     }
 }

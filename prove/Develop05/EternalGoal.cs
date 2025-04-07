@@ -4,31 +4,40 @@ namespace EternalQuestProgram
 {
     public class EternalGoal : Goal
     {
-        public int PointsPerEvent { get; private set; }
-        public int ProgressCount { get; private set; }
+        private int _pointsPerEvent;
+        private int _progressCount;
 
         public EternalGoal(string description, int pointsPerEvent)
         {
-            Description = description;
-            PointsPerEvent = pointsPerEvent;
-            ProgressCount = 0;
+            _description = description;
+            _pointsPerEvent = pointsPerEvent;
+            _progressCount = 0;
         }
 
         public override void RecordEvent()
         {
-            ProgressCount++;
-            Points += PointsPerEvent;
+            _progressCount++;
+            _points += _pointsPerEvent;
         }
 
         public override string GetProgress()
         {
-            return $"Recorded {ProgressCount} times.";
+            return $"Recorded {_progressCount} times.";
         }
 
-        // Method to load saved progress
         public void LoadProgress(int progressCount)
         {
-            ProgressCount = progressCount;
+            _progressCount = progressCount;
+        }
+
+        public int GetPointsPerEvent()
+        {
+            return _pointsPerEvent;
+        }
+
+        public int GetProgressCount()
+        {
+            return _progressCount;
         }
     }
 }
