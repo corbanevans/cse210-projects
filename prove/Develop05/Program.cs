@@ -2,6 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+
+
+
+// Added a level up functionality. Each new level requires more points to attain a new level, posing a good challenge for the user to keep up with their goals and continue setting new ones.
+
 namespace EternalQuestProgram
 {
     class Program
