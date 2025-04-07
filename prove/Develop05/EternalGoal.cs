@@ -24,5 +24,11 @@ namespace EternalQuestProgram
         {
             return $"Recorded {ProgressCount} times.";
         }
+
+        // Method to load saved progress
+        public void LoadProgress(int progressCount)
+        {
+            ProgressCount = progressCount;
+        }
     }
 }

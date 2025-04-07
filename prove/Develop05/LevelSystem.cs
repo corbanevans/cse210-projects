@@ -4,9 +4,9 @@ namespace EternalQuestProgram
 {
     public class LevelSystem
     {
-        public int CurrentLevel { get; private set; }
-        public int TotalPoints { get; private set; }
-        public int PointsToNextLevel { get; private set; }
+        public int CurrentLevel { get; set; }
+        public int TotalPoints { get; set; }
+        public int PointsToNextLevel { get; set; }
 
         public LevelSystem()
         {
@@ -34,7 +34,7 @@ namespace EternalQuestProgram
 
         private int CalculatePointsToNextLevel()
         {
-            return CurrentLevel * 1000; // Example: Levels require 1000 points multiplied by the current level.
+            return CurrentLevel * 1000;
         }
 
         public void DisplayLevelStatus()
@@ -42,6 +42,19 @@ namespace EternalQuestProgram
             Console.WriteLine($"Current Level: {CurrentLevel}");
             Console.WriteLine($"Total Points: {TotalPoints}");
             Console.WriteLine($"Points to Next Level: {PointsToNextLevel - TotalPoints}");
+        }
+
+        public string Save()
+        {
+            return $"{CurrentLevel},{TotalPoints},{PointsToNextLevel}";
+        }
+
+        public void Load(string data)
+        {
+            var parts = data.Split(',');
+            CurrentLevel = int.Parse(parts[0]);
+            TotalPoints = int.Parse(parts[1]);
+            PointsToNextLevel = int.Parse(parts[2]);
         }
     }
 }

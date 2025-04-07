@@ -142,7 +142,7 @@ namespace EternalQuestProgram
             using (StreamWriter writer = new StreamWriter(SaveFilePath))
             {
                 // Save LevelSystem
-                writer.WriteLine(levelSystem.Save());
+                writer.WriteLine($"{levelSystem.CurrentLevel},{levelSystem.TotalPoints},{levelSystem.PointsToNextLevel}");
 
                 // Save Goals
                 foreach (var goal in goals)
@@ -171,25 +171,35 @@ namespace EternalQuestProgram
             {
                 // Load LevelSystem
                 string levelData = reader.ReadLine();
-                levelSystem.Load(levelData);
+                var levelParts = levelData.Split(',');
+                levelSystem.CurrentLevel = int.Parse(levelParts[0]);
+                levelSystem.TotalPoints = int.Parse(levelParts[1]);
+                levelSystem.PointsToNextLevel = int.Parse(levelParts[2]);
 
                 // Load Goals
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    string[] parts = line.Split('|');
+                    var parts = line.Split('|');
                     string goalType = parts[0];
 
                     switch (goalType)
                     {
                         case "SimpleGoal":
-                            goals.Add(new SimpleGoal(parts[1], int.Parse(parts[2])));
+                            var simpleGoal = new SimpleGoal(parts[1], int.Parse(parts[2]));
+                            if (bool.Parse(parts[3]))
+                            {
+                                simpleGoal.RecordEvent();
+                            }
+                            goals.Add(simpleGoal);
                             break;
+
                         case "EternalGoal":
                             var eternalGoal = new EternalGoal(parts[1], int.Parse(parts[2]));
                             eternalGoal.LoadProgress(int.Parse(parts[3]));
                             goals.Add(eternalGoal);
                             break;
+
                         case "ChecklistGoal":
                             var checklistGoal = new ChecklistGoal(parts[1], int.Parse(parts[2]), int.Parse(parts[4]), int.Parse(parts[5]));
                             checklistGoal.LoadProgress(int.Parse(parts[3]), bool.Parse(parts[6]));

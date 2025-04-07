@@ -4,18 +4,19 @@ namespace EternalQuestProgram
 {
     public class ChecklistGoal : Goal
     {
-        public int RequiredCount { get; private set; }
+        public int PointsPerEvent { get; private set; }
         public int CurrentCount { get; private set; }
+        public int RequiredCount { get; private set; }
         public int BonusPoints { get; private set; }
         public bool IsCompleted { get; private set; }
 
         public ChecklistGoal(string description, int pointsPerEvent, int requiredCount, int bonusPoints)
         {
             Description = description;
-            Points = 0;
+            PointsPerEvent = pointsPerEvent;
             RequiredCount = requiredCount;
-            CurrentCount = 0;
             BonusPoints = bonusPoints;
+            CurrentCount = 0;
             IsCompleted = false;
         }
 
@@ -24,14 +25,26 @@ namespace EternalQuestProgram
             if (!IsCompleted)
             {
                 CurrentCount++;
-                Points += CurrentCount == RequiredCount ? BonusPoints : 0;
-                IsCompleted = CurrentCount >= RequiredCount;
+                Points += PointsPerEvent;
+
+                if (CurrentCount >= RequiredCount)
+                {
+                    Points += BonusPoints;
+                    IsCompleted = true;
+                }
             }
         }
 
         public override string GetProgress()
         {
             return $"Completed {CurrentCount}/{RequiredCount} times.";
+        }
+
+        // Method to load saved progress
+        public void LoadProgress(int currentCount, bool isCompleted)
+        {
+            CurrentCount = currentCount;
+            IsCompleted = isCompleted;
         }
     }
 }
